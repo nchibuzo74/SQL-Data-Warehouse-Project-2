@@ -92,6 +92,7 @@ BEGIN
     RAISE NOTICE '>> Inserting Data Into: silver.crm_prd_info';
     INSERT INTO silver.crm_prd_info (
         prd_id,
+        cat_id,
         prd_key,
         prd_nm,
         prd_cost,
@@ -101,6 +102,7 @@ BEGIN
     )
     SELECT
         prd_id,
+        REPLACE(SUBSTRING(prd_key, 1, 5), '-', '_') AS cat_id, -- Extract category ID
         SUBSTRING(prd_key, 7) AS prd_key,        -- Extract product key (from position 7 onwards)
         prd_nm,
         COALESCE(prd_cost, 0) AS prd_cost,

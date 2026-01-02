@@ -20,9 +20,13 @@ drop table silver.erp_loc_a101;
 drop table silver.erp_cust_az12;
 drop table silver.erp_px_cat_g1v2;
 
-drop view gold.fact_sales;
+drop view gold.dim_sales;
 drop view gold.dim_products;
 drop view gold.dim_customers;
+
+drop table gold.sales;
+drop table gold.products;
+drop table gold.customers;
 ----------------------------------------------------------------------
 
 
@@ -65,3 +69,15 @@ from silver.crm_sales_details
 where sls_prd_key = 'BB-7421';
 
 --------------------------------------------
+select pn.*, null as space, pc.*
+from bronze.crm_prd_info as pn
+---silver.erp_px_cat_g1v2 as pc
+left join bronze.erp_px_cat_g1v2 as pc
+on REPLACE(SUBSTRING(pn.prd_key FROM 1 FOR 5), '-', '_') = pc.id
+---where pn.prd_key = 'BB-7421';
+
+select pn.*, null as space, pc.*
+from silver.crm_prd_info as pn
+---silver.erp_px_cat_g1v2 as pc
+left join silver.erp_px_cat_g1v2 as pc
+on pn.cat_id = pc.id;
