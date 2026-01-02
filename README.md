@@ -63,6 +63,7 @@ data-warehouse-project/
 │   ├── bronze/                         # Scripts for extracting and loading raw data
 │   ├── silver/                         # Scripts for cleaning and transforming data
 │   ├── gold/                           # Scripts for creating analytical models
+|   ├── staging/                        # Scripts for extracting, loading raw data and appending raw data back to target system (bronze)
 │
 ├── tests/                              # Test scripts and quality files
 │
