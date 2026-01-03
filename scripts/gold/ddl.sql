@@ -35,7 +35,7 @@ SELECT
         WHEN ci.cst_gndr != 'n/a' THEN ci.cst_gndr -- CRM is the primary source for gender
         ELSE COALESCE(ca.gen, 'n/a')               -- Fallback to ERP data
     END                                AS gender,
-    ca.bdate                           AS birthdate,
+    ca.bdate                           AS birth_date,
     ci.cst_create_date                 AS create_date
 FROM silver.crm_cust_info AS ci
 LEFT JOIN silver.erp_cust_az12 AS ca
@@ -46,8 +46,12 @@ LEFT JOIN silver.erp_loc_a101 AS la
 --------------------------------------------------------------
 -- Add PRIMARY KEY constraint after table creation
 ALTER TABLE gold.customers ADD PRIMARY KEY (customer_id);
+
 -- Add UNIQUE constraint on customer_number
 ALTER TABLE gold.customers ADD CONSTRAINT uk_customers_customer_number UNIQUE (customer_number);
+
+-- Add UNIQUE constraint on customer_key
+ALTER TABLE gold.customers ADD CONSTRAINT uk_customers_customer_key UNIQUE (customer_key);
 
 
 -- Check existing indexes on the table
@@ -91,6 +95,12 @@ WHERE pn.prd_end_dt IS NULL; -- Filter out all historical data
 -- Add PRIMARY KEY constraint after table creation
 alter table gold.products add PRIMARY KEY(product_id);
 
+-- Add UNIQUE constraint on Product_number
+ALTER TABLE gold.products ADD CONSTRAINT uk_products_product_number UNIQUE (product_number);
+
+-- Add UNIQUE constraint on Product_Key
+ALTER TABLE gold.products ADD CONSTRAINT uk_products_product_key UNIQUE (product_key);
+
 -- Check existing indexes on the table
 SELECT 
     indexname,
@@ -129,9 +139,15 @@ LEFT JOIN silver.crm_cust_info AS cu
     ON sd.sls_cust_id = cu.cst_id::int;
 
 ---------------------------------------------------------------------
+-- Add PRIMARY KEY constraint after table creation
+alter table gold.sales add PRIMARY KEY(sales_key);
+
 -- Add FOREIGN KEY constraint after table creation
 alter table gold.sales 
     add CONSTRAINT fk_sales_customers FOREIGN KEY (customer_number) REFERENCES gold.customers(customer_number);
+
+alter table gold.sales 
+    add CONSTRAINT fk_sales_products FOREIGN KEY (product_number) REFERENCES gold.products(product_number);
 
 -- Check existing indexes on the table
 SELECT 
