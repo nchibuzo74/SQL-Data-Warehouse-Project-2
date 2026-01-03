@@ -79,3 +79,8 @@ docs/.doctrees/
 
 # Node modules (if using any JS tools)
 node_modules/
+
+# Draw.io files
+*.drawio
+*.drawio.png
+*.drawio.svg
